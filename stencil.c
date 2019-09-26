@@ -25,8 +25,8 @@ int main(int argc, char *argv[]) {
   int niters = atoi(argv[3]);
 
   // Allocate the image
-  double *image = malloc(sizeof(double)*nx*ny);
-  double *tmp_image = malloc(sizeof(double)*nx*ny);
+  double *image = malloc(sizeof(double)*(nx+2)*(ny+2));
+  double *tmp_image = malloc(sizeof(double)*(nx+2)*(ny+2));
 
   // Set the input image
   init_image(nx, ny, image, tmp_image);
@@ -50,13 +50,13 @@ int main(int argc, char *argv[]) {
 }
 
 void stencil(const int nx, const int ny, double *  image, double *  tmp_image) {
-  for (int j = 0; j < ny; ++j) {
-    for (int i = 0; i < nx; ++i) {
-      tmp_image[j+i*ny] = image[j+i*ny] * 3.0/5.0;
-      if (i > 0)    tmp_image[j+i*ny] += image[j  +(i-1)*ny] * 0.5/5.0;
-      if (i < nx-1) tmp_image[j+i*ny] += image[j  +(i+1)*ny] * 0.5/5.0;
-      if (j > 0)    tmp_image[j+i*ny] += image[j-1+i*ny] * 0.5/5.0;
-      if (j < ny-1) tmp_image[j+i*ny] += image[j+1+i*ny] * 0.5/5.0;
+  for (int j = 1; j < ny + 1; ++j) {
+    for (int i = 1; i < nx + 1; ++i) {
+      tmp_image[j+i*ny] =  image[j  +i    *ny] * 3.0/5.0;
+      tmp_image[j+i*ny] += image[j  +(i-1)*ny] * 0.5/5.0;
+      tmp_image[j+i*ny] += image[j  +(i+1)*ny] * 0.5/5.0;
+      tmp_image[j+i*ny] += image[j-1+i    *ny] * 0.5/5.0;
+      tmp_image[j+i*ny] += image[j+1+i    *ny] * 0.5/5.0;
     }
   }
 }
@@ -64,20 +64,24 @@ void stencil(const int nx, const int ny, double *  image, double *  tmp_image) {
 // Create the input image
 void init_image(const int nx, const int ny, double *  image, double *  tmp_image) {
   // Zero everything
-  for (int j = 0; j < ny; ++j) {
-    for (int i = 0; i < nx; ++i) {
+  for (int j = 0; j < ny + 2; ++j) {
+    for (int i = 0; i < nx + 2; ++i) {
       image[j+i*ny] = 0.0;
       tmp_image[j+i*ny] = 0.0;
     }
   }
 
-  // Checkerboard
-  for (int j = 0; j < 8; ++j) {
-    for (int i = 0; i < 8; ++i) {
-      for (int jj = j*ny/8; jj < (j+1)*ny/8; ++jj) {
-        for (int ii = i*nx/8; ii < (i+1)*nx/8; ++ii) {
-          if ((i+j)%2)
-          image[jj+ii*ny] = 100.0;
+  const int tile_size = 64;
+
+  for (int jb = 0; jb < ny; jb += tile_size) {
+    for (int ib = 0; ib < nx; ib += tile_size) {
+      if ((ib + jb) % (tile_size * 2)) {
+        const int jlim = (jb + tile_size > ny) ? ny : jb + tile_size;
+        const int ilim = (ib + tile_size > nx) ? nx : ib + tile_size;
+        for (int j = jb + 1; j < jlim + 1; ++j) {
+          for (int i = ib + 1; i < ilim + 1; ++i) {
+            image[j + i * ny] = 100.0;
+          }
         }
       }
     }
@@ -101,16 +105,16 @@ void output_image(const char * file_name, const int nx, const int ny, double *im
   // This is used to rescale the values
   // to a range of 0-255 for output
   double maximum = 0.0;
-  for (int j = 0; j < ny; ++j) {
-    for (int i = 0; i < nx; ++i) {
+  for (int j = 1; j < ny + 1; ++j) {
+    for (int i = 1; i < nx + 1; ++i) {
       if (image[j+i*ny] > maximum)
         maximum = image[j+i*ny];
     }
   }
 
   // Output image, converting to numbers 0-255
-  for (int j = 0; j < ny; ++j) {
-    for (int i = 0; i < nx; ++i) {
+  for (int j = 1; j < ny + 1; ++j) {
+    for (int i = 1; i < nx + 1; ++i) {
       fputc((char)(255.0*image[j+i*ny]/maximum), fp);
     }
   }
