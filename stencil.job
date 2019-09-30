@@ -1,18 +1,18 @@
 #!/bin/bash
-#PBS -N stencil
-#PBS -o stencil.out
-#PBS -joe
-#PBS -m a
-#PBS -qteaching
-#PBS -lnodes=1:ppn=16
-#PBS -lwalltime=00:10:00
 
-cd $PBS_O_WORKDIR
+#SBATCH --job-name stencil
+#SBATCH --nodes 1
+#SBATCH --ntasks-per-node 1
+#SBATCH --time 00:15:00
+#SBATCH --partition veryshort
+#SBATCH --output stencil.out
 
 echo Running on host `hostname`
 echo Time is `date`
 echo Directory is `pwd`
-echo PBS job ID is $PBS_JOBID
+echo Slurm job ID is $SLURM_JOB_ID
+echo This job runs on the following machines:
+echo `echo $SLURM_JOB_NODELIST | uniq`
 
+#! Run the executable
 ./stencil 1024 1024 100
-
