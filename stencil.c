@@ -1,4 +1,3 @@
-
 #include <stdio.h>
 #include <stdlib.h>
 #include <sys/time.h>
@@ -6,12 +5,12 @@
 // Define output file name
 #define OUTPUT_FILE "stencil.pgm"
 
-void stencil(const int nx, const int ny, const int height, double* image,
-             double* tmp_image);
-void init_image(const int nx, const int ny, const int height, double* image,
-                double* tmp_image);
+void stencil(const int nx, const int ny, const int width, const int height,
+             double* image, double* tmp_image);
+void init_image(const int nx, const int ny, const int width, const int height,
+                double* image, double* tmp_image);
 void output_image(const char* file_name, const int nx, const int ny,
-                  const int height, double* image);
+                  const int width, const int height, double* image);
 double wtime(void);
 
 int main(int argc, char* argv[])
@@ -37,13 +36,13 @@ int main(int argc, char* argv[])
   double* tmp_image = malloc(sizeof(double) * width * height);
 
   // Set the input image
-  init_image(nx, ny, height, image, tmp_image);
+  init_image(nx, ny, width, height, image, tmp_image);
 
   // Call the stencil kernel
   double tic = wtime();
   for (int t = 0; t < niters; ++t) {
-    stencil(nx, ny, height, image, tmp_image);
-    stencil(nx, ny, height, tmp_image, image);
+    stencil(nx, ny, width, height, image, tmp_image);
+    stencil(nx, ny, width, height, tmp_image, image);
   }
   double toc = wtime();
 
@@ -52,13 +51,13 @@ int main(int argc, char* argv[])
   printf(" runtime: %lf s\n", toc - tic);
   printf("------------------------------------\n");
 
-  output_image(OUTPUT_FILE, nx, ny, height, image);
+  output_image(OUTPUT_FILE, nx, ny, width, height, image);
   free(image);
   free(tmp_image);
 }
 
-void stencil(const int nx, const int ny, const int height, double* image,
-             double* tmp_image)
+void stencil(const int nx, const int ny, const int width, const int height,
+             double* image, double* tmp_image)
 {
   for (int j = 1; j < ny + 1; ++j) {
     for (int i = 1; i < nx + 1; ++i) {
@@ -72,8 +71,8 @@ void stencil(const int nx, const int ny, const int height, double* image,
 }
 
 // Create the input image
-void init_image(const int nx, const int ny, const int height, double* image,
-                double* tmp_image)
+void init_image(const int nx, const int ny, const int width, const int height,
+                double* image, double* tmp_image)
 {
   // Zero everything
   for (int j = 0; j < ny + 2; ++j) {
@@ -102,7 +101,7 @@ void init_image(const int nx, const int ny, const int height, double* image,
 
 // Routine to output the image in Netpbm grayscale binary image format
 void output_image(const char* file_name, const int nx, const int ny,
-                  const int height, double* image)
+                  const int width, const int height, double* image)
 {
   // Open output file
   FILE* fp = fopen(file_name, "w");
