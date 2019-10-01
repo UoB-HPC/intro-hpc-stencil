@@ -54,6 +54,7 @@ int main(int argc, char* argv[])
 
   output_image(OUTPUT_FILE, nx, ny, height, image);
   free(image);
+  free(tmp_image);
 }
 
 void stencil(const int nx, const int ny, const int height, double* image,
