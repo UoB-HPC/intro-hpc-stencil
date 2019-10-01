@@ -6,6 +6,7 @@
 #SBATCH --time 00:15:00
 #SBATCH --partition veryshort
 #SBATCH --output stencil.out
+#SBATCH --exclusive
 
 echo Running on host `hostname`
 echo Time is `date`
@@ -15,4 +16,4 @@ echo This job runs on the following machines:
 echo `echo $SLURM_JOB_NODELIST | uniq`
 
 #! Run the executable
-./stencil 1024 1024 100
+srun ./stencil 1024 1024 100
