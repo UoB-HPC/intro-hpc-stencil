@@ -37,9 +37,9 @@ The inputs required are:
 
 | nx   | ny   | niters | Command                   | Serial Time on BCp4 |
 | ---- | ---- | ------ | ------------------------- | ------------------- |
-| 1024 | 1024 | 100    | `./stencil 1024 1024 100` |           4.432068s |
-| 4096 | 4096 | 100    | `./stencil 4096 4096 100` |         105.934002s |
-| 8000 | 8000 | 100    | `./stencil 8000 8000 100` |         535.248648s |
+| 1024 | 1024 | 100    | `./stencil 1024 1024 100` |           5.908341s |
+| 4096 | 4096 | 100    | `./stencil 4096 4096 100` |         130.196475s |
+| 8000 | 8000 | 100    | `./stencil 8000 8000 100` |         561.118133s |
 
 ## Checking results
 
@@ -60,3 +60,24 @@ The reference input files for the different problems are named:
 | 1024 | 1024 | 100    | `stencil_1024_1024_100.pgm` |
 | 4096 | 4096 | 100    | `stencil_4096_4096_100.pgm` |
 | 8000 | 8000 | 100    | `stencil_8000_8000_100.pgm` |
+
+## MPI Advice
+
+For the MPI assignment you'll want to start running stencil over multiple cores
+and over multiple nodes. To do this on BCp4 you need to change the parameters
+and the top of the `stencil.job` job file.
+
+    --nodes: controls the number of nodes you want to run on
+    --ntasks-per-node: controls the number of MPI processes per node
+
+If these values are correctly set, then `srun` will pick up on them and run the
+required number of processes for your job.
+
+*FOR INTEL MPI YOU NEED THE FOLLOWING LINE IN THE JOB SUBMIT SCRIPT*
+
+    export I_MPI_PMI_LIBRARY=/usr/lib64/libpmi.so
+
+More info: 
+<https://www.acrc.bris.ac.uk/protected/bc4-docs/scheduler/index.html#running-parallel>
+
+
