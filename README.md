@@ -65,19 +65,20 @@ The reference input files for the different problems are named:
 
 For the MPI assignment you'll want to start running stencil over multiple cores
 and over multiple nodes. To do this on BCp4 you need to change the parameters
-and the top of the `stencil.job` job file.
+at the top of the `stencil.job` job file as follows:
 
-    --nodes: controls the number of nodes you want to run on
-    --ntasks-per-node: controls the number of MPI processes per node
+* `--nodes` controls the number of nodes you want to run on
+* `--ntasks-per-node` controls the number of MPI processes per node
 
 If these values are correctly set, then `srun` will pick up on them and run the
 required number of processes for your job.
 
-*FOR INTEL MPI YOU NEED THE FOLLOWING LINE IN THE JOB SUBMIT SCRIPT*
+**Important**: For Intel MPI to work with `srun` you need the following line in the job submit script:
 
-    export I_MPI_PMI_LIBRARY=/usr/lib64/libpmi.so
+```bash
+export I_MPI_PMI_LIBRARY=/usr/lib64/libpmi.so
+```
 
 More info: 
 <https://www.acrc.bris.ac.uk/protected/bc4-docs/scheduler/index.html#running-parallel>
-
 
