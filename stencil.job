@@ -1,18 +1,27 @@
 #!/bin/bash
-#PBS -N stencil
-#PBS -o stencil.out
-#PBS -joe
-#PBS -m a
-#PBS -qteaching
-#PBS -lnodes=1:ppn=16
-#PBS -lwalltime=00:10:00
 
-cd $PBS_O_WORKDIR
+#SBATCH --nodes 1
+#SBATCH --ntasks-per-node 1
+#SBATCH --partition veryshort
+#SBATCH --reservation COMS30005
+#SBATCH --account COMS30005
+#SBATCH --job-name stencil
+#SBATCH --time 00:15:00
+#SBATCH --output stencil.out
+#SBATCH --exclusive
 
-echo Running on host `hostname`
-echo Time is `date`
-echo Directory is `pwd`
-echo PBS job ID is $PBS_JOBID
+# Print some information about the job
+echo "Running on host $(hostname)"
+echo "Time is $(date)"
+echo "Directory is $(pwd)"
+echo "Slurm job ID is $SLURM_JOB_ID"
+echo
+echo "This job runs on the following machines:"
+echo "$SLURM_JOB_NODELIST" | uniq
+echo
 
-./stencil 1024 1024 100
+# Enable using `srun` with Intel MPI
+export I_MPI_PMI_LIBRARY=/usr/lib64/libpmi.so
 
+# Run the executable
+srun ./stencil 1024 1024 100
