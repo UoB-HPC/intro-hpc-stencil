@@ -4,9 +4,9 @@
 #SBATCH --nodes 1
 #SBATCH --ntasks-per-node 1
 #SBATCH --time 00:15:00
-#SBATCH --partition veryshort
 #SBATCH --output stencil.out
 #SBATCH --exclusive
+#SBATCH --reservation=COMS30005
 
 echo Running on host `hostname`
 echo Time is `date`
