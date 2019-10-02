@@ -6,7 +6,9 @@
 #SBATCH --time 00:15:00
 #SBATCH --output stencil.out
 #SBATCH --exclusive
-#SBATCH --reservation=COMS30005
+#SBATCH --reservation COMS30005
+#SBATCH --account COMS30005
+#SBATCH --partition veryshort
 
 echo Running on host `hostname`
 echo Time is `date`
