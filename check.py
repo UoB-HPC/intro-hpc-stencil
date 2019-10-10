@@ -19,32 +19,26 @@ class InputParser(argparse.ArgumentParser):
 
         # % tolerance
         self.add_argument("--tolerance",
-            nargs=1,
             default=1,
             type=int,
-            help="""Absolute tolerance to match against reference results""",
-            action='store')
+            help="""Absolute tolerance to match against reference results""")
 
         # Reference results
         self.add_argument("--ref-stencil-file",
-            nargs=1,
             required=True,
-            help="""reference stencil.pgm results file""",
-            action='store')
+            help="""reference stencil.pgm results file""")
 
         # Calculated results
         self.add_argument("--stencil-file",
-            nargs=1,
             required=True,
-            help="""calculated stencil.pgm results file""",
-            action='store')
+            help="""calculated stencil.pgm results file""")
 
 parser = InputParser()
 parsed_args = parser.parse_args()
 
 # Open reference and input files
-stencil_ref = open(parsed_args.ref_stencil_file[0], "rb")
-stencil_res = open(parsed_args.stencil_file[0], "rb")
+stencil_ref = open(parsed_args.ref_stencil_file, "rb")
+stencil_res = open(parsed_args.stencil_file, "rb")
 
 # Check image header
 ref_format, ref_nx, ref_ny, ref_depth = stencil_ref.readline().split()
