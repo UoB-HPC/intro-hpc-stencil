@@ -21,7 +21,7 @@ type `make` to build the code.  A binary named `stencil` is produced on a
 successful build.
 
 A job script for BlueCrystal Phase 4 is also provided in `stencil.job`.  This
-will request time on 1 node of the `teaching` queue and execute the `stencil`
+will request time on 1 node of the `veryshort` queue and execute the `stencil`
 binary on one of the input problems.  Submit this to the queue with the
 following command:
 
