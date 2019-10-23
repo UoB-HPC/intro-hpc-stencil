@@ -1,5 +1,5 @@
 #!/usr/bin/env python2
-
+from __future__ import print_function
 import sys
 import argparse
 
@@ -41,11 +41,17 @@ stencil_ref = open(parsed_args.ref_stencil_file, "rb")
 stencil_res = open(parsed_args.stencil_file, "rb")
 
 # Check image header
-ref_format, ref_nx, ref_ny, ref_depth = stencil_ref.readline().split()
-format, nx, ny, depth = stencil_res.readline().split()
-if not (format == ref_format == "P5"): print "Error: incorrect file format"; sys.exit()
-if not (depth == ref_depth == "255"): print "Error: incorrect depth value"; sys.exit()
-if not (nx == ref_nx and ny == ref_ny): print "Error: image sizes do not match"; sys.exit()
+ref_format, ref_nx, ref_ny, ref_depth = stencil_ref.readline().decode('ascii').split()
+format, nx, ny, depth = stencil_res.readline().decode('ascii').split()
+if not (format == ref_format == "P5"): 
+    print("Error: incorrect file format")
+    sys.exit()
+if not (depth == ref_depth == "255"):
+    print("Error: incorrect depth value")
+    sys.exit()
+if not (nx == ref_nx and ny == ref_ny):
+    print("Error: image sizes do not match")
+    sys.exit()
 
 # Compare images
 passed = True
@@ -56,12 +62,12 @@ for j in range(int(ref_ny)):
         if abs(ref_val - val) > parsed_args.tolerance:
             passed = False
             if (parsed_args.verbose):
-                print "Values differ at ("+str(i)+", "+str(j)+"): ref="+str(ref_val)+", res="+str(val)
+                print("Values differ at ("+str(i)+", "+str(j)+"): ref="+str(ref_val)+", res="+str(val))
 
 # Print summary
-print 80*"-"
+print(80*"-")
 if passed:
-    print "Comparison passed: images match with tolerance +/- "+str(parsed_args.tolerance)
+    print("Comparison passed: images match with tolerance +/- {}".format(parsed_args.tolerance))
 else:
-    print "Comparison failed"
-print 80*"-"
+    print("Comparison failed")
+print(80*"-")
